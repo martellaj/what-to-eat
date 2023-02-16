@@ -20,6 +20,8 @@ function App() {
     return JSON.parse(window.localStorage.getItem("skippedMeals") ?? "[]");
   });
 
+  const [isListOpen, setIsListOpen] = useState(false);
+
   useEffect(() => {
     if (selectedMeals.length === meals.length) {
       setMeal(null);
@@ -40,96 +42,185 @@ function App() {
 
   return (
     <div className="App">
-      <Card
-        meal={meal}
-        onSkipClicked={(meal) => {
-          const updatedSkippedMeals = [...skippedMeals, meal];
-
-          window.localStorage.setItem(
-            "skippedMeals",
-            JSON.stringify(updatedSkippedMeals)
-          );
-
-          setSkippedMeals([...updatedSkippedMeals]);
-        }}
-        onAddToMenuClicked={(meal) => {
-          const updatedSelectedMeals = [...selectedMeals, meal];
-
-          window.localStorage.setItem(
-            "selectedMeals",
-            JSON.stringify(updatedSelectedMeals)
-          );
-
-          setSelectedMeals([...updatedSelectedMeals]);
-        }}
-      />
-
-      <div className="selectedMealsContainer">
-        {selectedMeals.map((meal) => {
-          return <div key={meal.name}>{meal.name}</div>;
-        })}
-      </div>
-
-      <div
+      <i
+        className="fa-sharp fa-solid fa-bars"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          alignSelf: "flex-start",
+          marginBottom: "16px",
+          fontSize: "24px",
         }}
-      >
-        {selectedMeals.length > 0 && (
-          <button
-            style={{ padding: "6px 12px 10px", marginBottom: "8px" }}
-            onClick={() => {
-              const mealPlanDetails = selectedMeals
-                .map((meal) => {
-                  return `${meal.name}: ${meal.source}`;
-                })
-                .join("\n");
+        onClick={() => {
+          setIsListOpen(!isListOpen);
+        }}
+      ></i>
 
-              var ua = navigator.userAgent.toLowerCase();
-              var isAndroid = ua.indexOf("android") > -1;
+      {!isListOpen && (
+        <>
+          <Card
+            meal={meal}
+            onSkipClicked={(meal) => {
+              const updatedSkippedMeals = [...skippedMeals, meal];
 
-              const isIos =
-                [
-                  "iPad Simulator",
-                  "iPhone Simulator",
-                  "iPod Simulator",
-                  "iPad",
-                  "iPhone",
-                  "iPod",
-                ].includes(navigator.platform) ||
-                // iPad on iOS 13 detection
-                (navigator.userAgent.includes("Mac") &&
-                  "ontouchend" in document);
+              window.localStorage.setItem(
+                "skippedMeals",
+                JSON.stringify(updatedSkippedMeals)
+              );
 
-              if (isIos || isAndroid) {
-                navigator.share({
-                  text: mealPlanDetails,
-                });
-              } else {
-                copy(mealPlanDetails);
-              }
+              setSkippedMeals([...updatedSkippedMeals]);
+            }}
+            onAddToMenuClicked={(meal) => {
+              const updatedSelectedMeals = [...selectedMeals, meal];
+
+              window.localStorage.setItem(
+                "selectedMeals",
+                JSON.stringify(updatedSelectedMeals)
+              );
+
+              setSelectedMeals([...updatedSelectedMeals]);
+            }}
+          />
+
+          <div className="selectedMealsContainer">
+            {selectedMeals
+              .sort((a, b) => {
+                return a.name.localeCompare(b.name);
+              })
+              .map((meal) => {
+                return <div key={meal.name}>{meal.name}</div>;
+              })}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            📝 get meal plan details
-          </button>
-        )}
+            {selectedMeals.length > 0 && (
+              <button
+                style={{ padding: "6px 12px 10px", marginBottom: "8px" }}
+                onClick={() => {
+                  const mealPlanDetails = selectedMeals
+                    .map((meal) => {
+                      return `${meal.name}: ${meal.source}`;
+                    })
+                    .join("\n");
 
-        <button
-          style={{ padding: "6px 12px 10px" }}
-          onClick={() => {
-            window.localStorage.setItem("selectedMeals", JSON.stringify([]));
-            setSelectedMeals([]);
+                  var ua = navigator.userAgent.toLowerCase();
+                  var isAndroid = ua.indexOf("android") > -1;
 
-            window.localStorage.setItem("skippedMeals", JSON.stringify([]));
-            setSkippedMeals([]);
-          }}
-        >
-          ♻️ reset
-        </button>
-      </div>
+                  const isIos =
+                    [
+                      "iPad Simulator",
+                      "iPhone Simulator",
+                      "iPod Simulator",
+                      "iPad",
+                      "iPhone",
+                      "iPod",
+                    ].includes(navigator.platform) ||
+                    // iPad on iOS 13 detection
+                    (navigator.userAgent.includes("Mac") &&
+                      "ontouchend" in document);
+
+                  if (isIos || isAndroid) {
+                    navigator.share({
+                      text: mealPlanDetails,
+                    });
+                  } else {
+                    copy(mealPlanDetails);
+                  }
+                }}
+              >
+                📝 get meal plan details
+              </button>
+            )}
+
+            <button
+              style={{ padding: "6px 12px 10px" }}
+              onClick={() => {
+                window.localStorage.setItem(
+                  "selectedMeals",
+                  JSON.stringify([])
+                );
+                setSelectedMeals([]);
+
+                window.localStorage.setItem("skippedMeals", JSON.stringify([]));
+                setSkippedMeals([]);
+              }}
+            >
+              ♻️ reset
+            </button>
+          </div>
+        </>
+      )}
+
+      {isListOpen && (
+        <div className="listContainer">
+          <div className="list">
+            {meals
+              .sort((a, b) => {
+                return a.name.localeCompare(b.name);
+              })
+              .map((meal) => {
+                return (
+                  <div
+                    key={meal.name}
+                    className="listItem"
+                    style={{
+                      backgroundColor:
+                        selectedMeals.find((m) => m.name === meal.name) &&
+                        "#004700",
+                    }}
+                  >
+                    <div>{meal.name}</div>
+                    {selectedMeals.find((m) => m.name === meal.name) && (
+                      <i
+                        className="fa-sharp fa-solid fa-times listIcon"
+                        style={{
+                          alignSelf: "flex-end",
+                          fontSize: "24px",
+                        }}
+                        onClick={() => {
+                          const updatedSelectedMeals = selectedMeals.filter(
+                            (m) => m.name !== meal.name
+                          );
+
+                          window.localStorage.setItem(
+                            "selectedMeals",
+                            JSON.stringify(updatedSelectedMeals)
+                          );
+
+                          setSelectedMeals([...updatedSelectedMeals]);
+                        }}
+                      ></i>
+                    )}
+                    {!selectedMeals.find((m) => m.name === meal.name) && (
+                      <i
+                        className="fa-sharp fa-solid fa-plus listIcon"
+                        style={{
+                          alignSelf: "flex-end",
+                          fontSize: "24px",
+                        }}
+                        onClick={() => {
+                          const updatedSelectedMeals = [...selectedMeals, meal];
+
+                          window.localStorage.setItem(
+                            "selectedMeals",
+                            JSON.stringify(updatedSelectedMeals)
+                          );
+
+                          setSelectedMeals([...updatedSelectedMeals]);
+                        }}
+                      ></i>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,13 @@
 #root {
-  max-width: 1280px;
+  max-width: 400px;
   margin: 0 auto;
   text-align: center;
+  width: 400px;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
 }
 
 .logo {
@@ -37,6 +43,7 @@
   flex-direction: column;
   padding: 16px;
   padding-bottom: 30px;
+  align-self: center;
 
   width: 300px;
   background: grey;
@@ -87,4 +94,21 @@
   font-variant: all-petite-caps;
   font-size: 24px;
   margin-bottom: 24px;
+}
+
+.listContainer {
+  width: 400px;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  font-variant: all-small-caps;
+  font-size: 20px;
+  border-bottom: 1px solid;
+}
+
+.listIcon {
+  width: 20px;
 }
