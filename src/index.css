@@ -30,6 +30,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   padding-top: 24px;
+  justify-content: center;
 }
 
 h1 {
