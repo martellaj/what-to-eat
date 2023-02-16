@@ -49,6 +49,7 @@ button {
   transition: border-color 0.25s;
   font-variant: all-small-caps;
   width: fit-content;
+  color: white;
 }
 button:hover {
   border-color: #646cff;

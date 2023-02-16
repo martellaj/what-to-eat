@@ -168,6 +168,7 @@ function App() {
               const searchValue = e.target.value.toLowerCase();
               setSearchValue(searchValue);
             }}
+            value={searchValue}
           />
 
           <div className="list">
