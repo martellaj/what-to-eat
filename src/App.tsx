@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { meals, Meal } from "./meals";
+import copy from "copy-to-clipboard";
 
 function App() {
   const [meal, setMeal] = useState<Meal | null>(() => {
@@ -81,11 +82,35 @@ function App() {
           <button
             style={{ padding: "6px 12px 10px", marginBottom: "8px" }}
             onClick={() => {
-              window.localStorage.setItem("selectedMeals", JSON.stringify([]));
-              setSelectedMeals([]);
+              const mealPlanDetails = selectedMeals
+                .map((meal) => {
+                  return `${meal.name}: ${meal.source}`;
+                })
+                .join("\n");
 
-              window.localStorage.setItem("skippedMeals", JSON.stringify([]));
-              setSkippedMeals([]);
+              var ua = navigator.userAgent.toLowerCase();
+              var isAndroid = ua.indexOf("android") > -1;
+
+              const isIos =
+                [
+                  "iPad Simulator",
+                  "iPhone Simulator",
+                  "iPod Simulator",
+                  "iPad",
+                  "iPhone",
+                  "iPod",
+                ].includes(navigator.platform) ||
+                // iPad on iOS 13 detection
+                (navigator.userAgent.includes("Mac") &&
+                  "ontouchend" in document);
+
+              if (isIos || isAndroid) {
+                navigator.share({
+                  text: mealPlanDetails,
+                });
+              } else {
+                copy(mealPlanDetails);
+              }
             }}
           >
             📝 get meal plan details
