@@ -163,6 +163,7 @@ function App() {
           <input
             type="text"
             placeholder="Search"
+            className="search"
             onChange={(e) => {
               const searchValue = e.target.value.toLowerCase();
               setSearchValue(searchValue);
