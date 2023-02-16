@@ -1,13 +1,14 @@
 #root {
   max-width: 400px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 12px;
   text-align: center;
-  width: 400px;
 }
 
 .App {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .logo {
@@ -97,7 +98,7 @@
 }
 
 .listContainer {
-  width: 400px;
+  width: 100%;
 }
 
 .listItem {

@@ -40,6 +40,8 @@ function App() {
     setMeal(meal);
   }, [selectedMeals, skippedMeals]);
 
+  const [searchValue, setSearchValue] = useState("");
+
   return (
     <div className="App">
       <i
@@ -158,10 +160,32 @@ function App() {
 
       {isListOpen && (
         <div className="listContainer">
+          <input
+            type="text"
+            placeholder="Search"
+            onChange={(e) => {
+              const searchValue = e.target.value.toLowerCase();
+              setSearchValue(searchValue);
+            }}
+          />
+
           <div className="list">
             {meals
               .sort((a, b) => {
                 return a.name.localeCompare(b.name);
+              })
+              .filter((meal) => {
+                if (searchValue === "") {
+                  return true;
+                }
+
+                return (
+                  meal.name.toLowerCase().includes(searchValue) ||
+                  meal.source.toLowerCase().includes(searchValue) ||
+                  meal.ingredients.some((ingredient) =>
+                    ingredient.toLowerCase().includes(searchValue)
+                  )
+                );
               })
               .map((meal) => {
                 return (
